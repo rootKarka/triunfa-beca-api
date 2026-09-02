@@ -1,0 +1,24 @@
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: triunfa_beca_db
+    restart: always
+    environment:
+      POSTGRES_USER: triunfa_user
+      POSTGRES_PASSWORD: triunfa_pass_2026
+      POSTGRES_DB: triunfa_beca
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./src/database/migrations/001_init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - triunfa_network
+
+volumes:
+  pgdata:
+
+networks:
+  triunfa_network:
+    driver: bridge
