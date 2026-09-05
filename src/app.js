@@ -7,6 +7,14 @@ import matriculaRoutes from './modules/public/solicitudes-matricula/solicitudes-
 
 const app = express();
 
+// ✅ CONFIGURACIÓN DE CORS (ANTES de las rutas)
+app.use(cors({
+  origin: 'http://localhost:8080', // El puerto de tu frontend
+  credentials: true, // Si necesitas enviar cookies o autenticación
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+
 // Middlewares globales
 app.use(cors({ origin: env.corsOrigins || '*' })); // Fallback a '*' por si acaso
 app.use(express.json());
