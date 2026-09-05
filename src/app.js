@@ -2,6 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import env from './config/env.js';
 import solicitudInfoRoutes from './modules/public/solicitudes-info/solicitudes-info.routes.js';
+import matriculaRoutes from './modules/public/solicitudes-matricula/solicitudes-matricula.routes.js'
+
 
 const app = express();
 
@@ -12,6 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Montar rutas de la API
 app.use('/api/v1/solicitudes', solicitudInfoRoutes);
+app.use('/api/v1/solicitudes', matriculaRoutes);
 
 // Manejo de rutas no encontradas (404)
 app.use((req, res) => {

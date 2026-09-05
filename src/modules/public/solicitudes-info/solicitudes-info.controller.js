@@ -5,7 +5,7 @@ export const postSolicitudInfo = async (req, res) => {
     const nuevaSolicitud = await crearSolicitudInfo(req.body);
 
     return res.status(201).json({
-      succes: true,
+      success: true,
       message: 'Solicitud de informacion registrada correctamente jeje',
       data: nuevaSolicitud
     });
@@ -22,13 +22,13 @@ export const getSolicitudesInfo = async (req, res) => {
   try {
     const solicitudes = await obtenerTodasLasSolicitudes();
     return res.status(200).json({
-      succes: true,
+      success: true,
       data: solicitudes
     });
   } catch (error) {
     console.error('Error al obtener solicitudes pipipi: '. error);
     return res.status(500).json({
-      succes: false,
+      success: false,
       message: 'Error interno del servidor, lo siento amiko'
     });
   }
