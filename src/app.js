@@ -2,6 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import env from './config/env.js';
 import solicitudInfoRoutes from './modules/public/solicitudes-info/solicitudes-info.routes.js';
+//de matricula 
+import solicitudMatriculaRoutes from './modules/public/solicitudes-matricula/solicitudes-matricula.routes.js';
+
 
 const app = express();
 
@@ -12,6 +15,10 @@ app.use(express.urlencoded({ extended: true }));
 
 // Montar rutas de la API
 app.use('/api/v1/solicitudes', solicitudInfoRoutes);
+
+//Matricula
+app.use('/api/v1/solicitudes', solicitudMatriculaRoutes);
+
 
 // Manejo de rutas no encontradas (404)
 app.use((req, res) => {
