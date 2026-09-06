@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import env from './config/env.js';
+
+//ojo para la quieres mas informacion
 import solicitudInfoRoutes from './modules/public/solicitudes-info/solicitudes-info.routes.js';
 
 const app = express();
@@ -10,7 +12,7 @@ app.use(cors({ origin: env.corsOrigins || '*' })); // Fallback a '*' por si acas
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Montar rutas de la API
+// Montar rutas de la API // quieres mas informacion 
 app.use('/api/v1/solicitudes', solicitudInfoRoutes);
 
 // Manejo de rutas no encontradas (404)
@@ -26,3 +28,4 @@ app.use((err, req, res, next) => {
 
 // Exportamos la app configurada, pero NO la levantamos aquí
 export default app;
+
