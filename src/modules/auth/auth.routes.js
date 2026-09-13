@@ -1,17 +1,19 @@
-const { Router } = require('express');
-const { body } = require('express-validator');
-const controller = require('./auth.controller');
-const validate = require('../../shared/middlewares/validate.middleware');
+import { Router } from 'express';
+import { body,validationResult } from 'express-validator';
+import { login } from './auth.controller.js';
 
-const router = Router();
+const router=Router();
 
-const loginValidation = [
+const validar=(req,res,next)=>{
+  const errors=validationResult(req);
+  if(!errors.isEmpty()) return res.status(400).json({success:false,errors:errors.array()});
+  next();
+};
+
+router.post('/login',
   body('correo').isEmail().withMessage('Correo electrónico inválido'),
   body('password').notEmpty().withMessage('La contraseña es obligatoria'),
-  validate,
-];
+  validar,login
+);
 
-// POST /api/v1/admin/auth/login
-router.post('/login', loginValidation, controller.login);
-
-module.exports = router;
+export default router;

@@ -1,19 +1,9 @@
-const service = require('./auth.service');
-const response = require('../../shared/utils/response');
+import { login as loginService } from './auth.service.js';
 
-const login = async (req, res, next) => {
+export const login = async (req,res,next) => {
   try {
-    const { correo, password } = req.body;
-    const result = await service.login(correo, password);
-
-    if (!result) {
-      return response.error(res, 'Credenciales inválidas', 401);
-    }
-
-    return response.success(res, result, 'Inicio de sesión exitoso');
-  } catch (err) {
-    next(err);
-  }
+    const resultado=await loginService(req.body.correo,req.body.password);
+    if(!resultado) return res.status(401).json({success:false,message:'Credenciales inválidas'});
+    return res.status(200).json({success:true,message:'Inicio de sesión exitoso',data:resultado});
+  } catch(error) { next(error); }
 };
-
-module.exports = { login };
