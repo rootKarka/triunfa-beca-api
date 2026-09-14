@@ -1,42 +1,20 @@
-const jwt = require('jsonwebtoken');
-const env = require('../../config/env');
-const response = require('../utils/response');
+import jwt from 'jsonwebtoken';
+import env from '../../config/env.js';
 
-/**
- * Verifica que el request tenga un JWT válido
- */
-const verifyToken = (req, res, next) => {
+export const verifyToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return response.error(res, 'Token no proporcionado', 401);
-  }
-
-  const token = authHeader.split(' ')[1];
+  if (!authHeader?.startsWith('Bearer ')) return res.status(401).json({ success: false, message: 'Token no proporcionado' });
 
   try {
-    const decoded = jwt.verify(token, env.jwt.secret);
-    req.user = decoded;
+    req.user = jwt.verify(authHeader.split(' ')[1], env.jwt.secret);
     next();
-  } catch (err) {
-    if (err.name === 'TokenExpiredError') {
-      return response.error(res, 'Token expirado', 401);
-    }
-    return response.error(res, 'Token inválido', 401);
+  } catch (error) {
+    const message = error.name === 'TokenExpiredError' ? 'Token expirado' : 'Token inválido';
+    return res.status(401).json({ success: false, message });
   }
 };
 
-/**
- * Verifica que el usuario tenga uno de los roles permitidos
- * @param  {...string} roles - Roles permitidos
- */
-const requireRole = (...roles) => {
-  return (req, res, next) => {
-    if (!req.user || !roles.includes(req.user.role)) {
-      return response.error(res, 'No tienes permisos para esta acción', 403);
-    }
-    next();
-  };
+export const requireRole = (...roles) => (req, res, next) => {
+  if (!req.user || !roles.includes(req.user.role)) return res.status(403).json({ success: false, message: 'No tienes permisos para esta acción' });
+  next();
 };
-
-module.exports = { verifyToken, requireRole };

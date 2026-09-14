@@ -1,12 +1,9 @@
-import { Router} from "express";
-import { postMatriculaInfo, getMatriculaInfo } from "./solicitudes-matricula.controller.js";
+import { Router } from "express";
+import { postSolicitudMatricula, getSolicitudesMatricula } from "./solicitudes-matricula.controller.js";
 
 const router = Router();
 
-// Ruta publica para que el frontend envie el formulario
-router.post('/matricula', postMatriculaInfo);
-
-// Ruta para el admin (mas adelante le pondremos el  middelware de auth)
-router.get('/matricula', getMatriculaInfo);
+router.post('/matricula', postSolicitudMatricula);
+router.get('/matricula', getSolicitudesMatricula);
 
 export default router;
