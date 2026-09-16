@@ -1,6 +1,6 @@
-const { query } = require('../../../config/database');
+import { query } from '../../../config/database.js';
 
-const getImagenes = async (seccion) => {
+export const getImagenes = async (seccion) => {
   let sql = `
     SELECT id, url, texto_alt, seccion, orden, es_activa, fecha_creacion
     FROM imagenes
@@ -19,7 +19,7 @@ const getImagenes = async (seccion) => {
   return result.rows;
 };
 
-const getImagenById = async (id) => {
+export const getImagenById = async (id) => {
   const sql = `
     SELECT id, url, texto_alt, seccion, orden, es_activa, fecha_creacion
     FROM imagenes
@@ -28,5 +28,3 @@ const getImagenById = async (id) => {
   const result = await query(sql, [id]);
   return result.rows[0] || null;
 };
-
-module.exports = { getImagenes, getImagenById };
