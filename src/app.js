@@ -1,29 +1,43 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
 import env from './config/env.js';
+
 import solicitudInfoRoutes from './modules/public/solicitudes-info/solicitudes-info.routes.js';
 import solicitudMatriculaRoutes from './modules/public/solicitudes-matricula/solicitudes-matricula.routes.js';
 import catalogosRoutes from './modules/public/catalogos/catalogos.routes.js';
-import adminCatalogosRoutes from './modules/admin/catalogos/catalogos.routes.js';
 import authRoutes from './modules/auth/auth.routes.js';
+import adminCatalogosRoutes from './modules/admin/catalogos/catalogos.routes.js';
+import adminSolicitudesRoutes from './modules/admin/solicitudes/solicitudes.routes.js';
+import adminPlantillasRoutes from './modules/admin/plantillas/plantillas.routes.js';
+import { authMiddleware } from './shared/auth.middleware.js';
+import { notFoundHandler, errorHandler } from './shared/error-handler.js';
 
 const app = express();
 
-app.use(cors({ origin: env.corsOrigins || '*' }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+/* Seguridad y logging */
+app.use(helmet());
+app.use(cors({ origin: env.corsOrigins }));
+app.use(morgan(env.nodeEnv === 'development' ? 'dev' : 'combined'));
 
-app.use('/api/v1/solicitudes', solicitudInfoRoutes);
-app.use('/api/v1/solicitudes', solicitudMatriculaRoutes);
+/* Parsing con límite de tamaño */
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true, limit: '1mb' }));
+
+/* Público */
+app.use('/api/v1/solicitudes/informacion', solicitudInfoRoutes);
+app.use('/api/v1/solicitudes/matricula', solicitudMatriculaRoutes);
 app.use('/api/v1/catalogos', catalogosRoutes);
-app.use('/api/v1/admin/catalogos', adminCatalogosRoutes);
-app.use('/api/v1/admin/auth',authRoutes);
+app.use('/api/v1/admin/auth', authRoutes);
 
-app.use((req, res) => res.status(404).json({ status: 'fail', message: 'Ruta no encontrada' }));
+/* Admin (protegido) */
+app.use('/api/v1/admin/solicitudes', adminSolicitudesRoutes);
+app.use('/api/v1/admin/catalogos', authMiddleware, adminCatalogosRoutes);
+app.use('/api/v1/admin/plantillas', adminPlantillasRoutes);
 
-app.use((err, req, res, next) => {
-  console.error('Error no controlado:', err);
-  res.status(500).json({ status: 'error', message: 'Error interno del servidor' });
-});
+/* 404 y errores (siempre al final) */
+app.use(notFoundHandler);
+app.use(errorHandler);
 
 export default app;

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { param,body,validationResult } from 'express-validator';
-import { verifyToken,requireRole } from '../../../shared/middelwares/auth.middelware.js';
+import { authMiddleware, requireRole } from '../../../shared/auth.middleware.js';
 import { listarOpciones,agregarOpcion,editarOpcion,actualizarEstado } from './catalogos.controller.js';
 
 const router=Router();
@@ -12,7 +12,7 @@ const validar=(req,res,next)=>{
   next();
 };
 
-router.use(verifyToken);
+router.use(authMiddleware);
 router.use(requireRole('admin','staff'));
 
 router.get('/:codigo/opciones',

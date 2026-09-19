@@ -1,35 +1,15 @@
-import { crearSolicitudInfo, obtenerTodasLasSolicitudes } from "./solicitudes-info.service.js";
+import { crearSolicitudInfo } from './solicitudes-info.service.js';
 
-export const postSolicitudInfo = async (req, res) => {
+/** POST /api/v1/solicitudes/info — registro público de solicitudes de información */
+export const postSolicitudInfo = async (req, res, next) => {
   try {
-    const nuevaSolicitud = await crearSolicitudInfo(req.body);
-
-    return res.status(201).json({
+    const solicitud = await crearSolicitudInfo(req.body);
+    res.status(201).json({
       success: true,
-      message: 'Solicitud de informacion registrada correctamente jeje',
-      data: nuevaSolicitud
-    });
-  } catch (error){
-    console.error('Error al crear solicitud pipipi: ', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Error interno del servidor al procesar solicitud, lo siento amiko'
-    });
-  }
-};
-
-export const getSolicitudesInfo = async (req, res) => {
-  try {
-    const solicitudes = await obtenerTodasLasSolicitudes();
-    return res.status(200).json({
-      success: true,
-      data: solicitudes
+      message: 'Solicitud registrada correctamente',
+      data: solicitud,
     });
   } catch (error) {
-    console.error('Error al obtener solicitudes pipipi: '. error);
-    return res.status(500).json({
-      success: false,
-      message: 'Error interno del servidor, lo siento amiko'
-    });
+    next(error);
   }
-}
+};

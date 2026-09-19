@@ -1,19 +1,13 @@
 import { Router } from 'express';
-import { body,validationResult } from 'express-validator';
-import { login } from './auth.controller.js';
+import authController from './auth.controller.js';
+import { authMiddleware } from '../../shared/auth.middleware.js';
 
-const router=Router();
+const router = Router();
 
-const validar=(req,res,next)=>{
-  const errors=validationResult(req);
-  if(!errors.isEmpty()) return res.status(400).json({success:false,errors:errors.array()});
-  next();
-};
+// Público
+router.post('/login', authController.login);
 
-router.post('/login',
-  body('correo').isEmail().withMessage('Correo electrónico inválido'),
-  body('password').notEmpty().withMessage('La contraseña es obligatoria'),
-  validar,login
-);
+// Protegido
+router.get('/me', authMiddleware, authController.me);
 
 export default router;

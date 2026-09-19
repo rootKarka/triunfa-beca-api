@@ -1,4 +1,14 @@
-import { query } from '../../../config/database.js';
+import { pool } from '../../../config/database.js';
+
+/** Genera el código correlativo SOL-#### dentro de la transacción activa. */
+async function generarCodigo(client) {
+  const { rows } = await client.query(
+    `INSERT INTO contadores (clave, valor) VALUES ('solicitudes', 1)
+     ON CONFLICT (clave) DO UPDATE SET valor = contadores.valor + 1
+     RETURNING valor`,
+  );
+  return `SOL-${String(rows[0].valor).padStart(4, '0')}`;
+}
 
 export const crearSolicitudInfo = async (datos) => {
   const {
@@ -9,36 +19,40 @@ export const crearSolicitudInfo = async (datos) => {
     nivel_educativo,
     servicio_interes,
     mensaje,
-    canal_preferido
+    canal_preferido,
   } = datos;
 
-  const text = `
-    INSERT INTO solicitudes_informacion
-    (nombres_apellidos, dni, celular, correo, nivel_educativo, servicio_interes,
-    mensaje, canal_preferido)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-    RETURNING id, nombres_apellidos, correo, fecha_solicitud, estado;
-  `;
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
 
-  const values = [
-    nombres_apellidos,
-    dni,
-    celular,
-    correo,
-    nivel_educativo,
-    servicio_interes,
-    mensaje || null,
-    canal_preferido || 'WhastApp'
-  ];
+    const codigo = await generarCodigo(client);
 
-  const result = await query(text, values);
-  return result.rows[0];
+    const { rows } = await client.query(
+      `INSERT INTO solicitudes_informacion
+         (codigo, nombres_apellidos, dni, celular, correo, nivel_educativo,
+          servicio_interes, mensaje, canal_preferido)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       RETURNING codigo, correo, fecha_solicitud, estado`,
+      [
+        codigo,
+        nombres_apellidos,
+        dni,
+        celular,
+        correo,
+        nivel_educativo,
+        servicio_interes,
+        mensaje ?? null,
+        canal_preferido ?? 'WhatsApp',
+      ],
+    );
 
-};
-
-export const obtenerTodasLasSolicitudes = async () => {
-  const text = `SELECT * FROM solicitudes_informacion ORDER BY fecha_solicitud DESC`;
-  const  result = await query(text);
-  return result.rows;
-
+    await client.query('COMMIT');
+    return rows[0];
+  } catch (error) {
+    await client.query('ROLLBACK');
+    throw error;
+  } finally {
+    client.release();
+  }
 };

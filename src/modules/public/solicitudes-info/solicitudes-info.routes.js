@@ -1,12 +1,10 @@
-import { Router } from "express";
-import { postSolicitudInfo, getSolicitudesInfo } from "./solicitudes-info.controller.js";
+import { Router } from 'express';
+import { postSolicitudInfo } from './solicitudes-info.controller.js';
+import { validarSolicitudInfo } from './solicitudes-info.validators.js';
 
 const router = Router();
 
-// Ruta pública para que el frontend envíe el formulario
-router.post('/informacion', postSolicitudInfo);
-
-// Ruta para el admin (más adelante le pondremos middleware de auth)
-router.get('/informacion', getSolicitudesInfo);
+// Solo creación pública. El listado vive en /admin/solicitudes (con auth).
+router.post('/', validarSolicitudInfo, postSolicitudInfo);
 
 export default router;
