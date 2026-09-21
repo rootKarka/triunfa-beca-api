@@ -1,17 +1,13 @@
-const { Router } = require('express');
-const { body } = require('express-validator');
-const controller = require('./auth.controller');
-const validate = require('../../shared/middlewares/validate.middleware');
+import { Router } from 'express';
+import authController from './auth.controller.js';
+import { authMiddleware } from '../../shared/auth.middleware.js';
 
 const router = Router();
 
-const loginValidation = [
-  body('correo').isEmail().withMessage('Correo electrónico inválido'),
-  body('password').notEmpty().withMessage('La contraseña es obligatoria'),
-  validate,
-];
+// Público
+router.post('/login', authController.login);
 
-// POST /api/v1/admin/auth/login
-router.post('/login', loginValidation, controller.login);
+// Protegido
+router.get('/me', authMiddleware, authController.me);
 
-module.exports = router;
+export default router;

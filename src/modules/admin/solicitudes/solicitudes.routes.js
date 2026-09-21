@@ -1,20 +1,17 @@
-const { Router } = require('express');
-const controller = require('./solicitudes.controller');
-const { verifyToken, requireRole } = require('../../../shared/middlewares/auth.middleware');
+import { Router } from 'express';
+import solicitudesController from './solicitudes.controller.js';
+import { authMiddleware } from '../../../shared/auth.middleware.js';
 
 const router = Router();
 
-// Todas las rutas admin requieren autenticación
-router.use(verifyToken);
-router.use(requireRole('admin', 'staff'));
+// Todo el módulo admin requiere autenticación
+router.use(authMiddleware);
 
-// GET /api/v1/admin/solicitudes
-router.get('/', controller.getSolicitudes);
+router.get('/', solicitudesController.getAll);
+router.get('/estadisticas', solicitudesController.getEstadisticas);
+router.get('/:id', solicitudesController.getById);
+router.put('/:id/estado', solicitudesController.updateEstado);
+router.put('/:id/notas', solicitudesController.updateNotas);
+router.post('/:id/mensajes', solicitudesController.registrarMensaje);
 
-// GET /api/v1/admin/solicitudes/:id
-router.get('/:id', controller.getSolicitudById);
-
-// PATCH /api/v1/admin/solicitudes/:id/estado
-router.patch('/:id/estado', controller.actualizarEstado);
-
-module.exports = router;
+export default router;

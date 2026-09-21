@@ -1,33 +1,54 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const { query } = require('../../config/database');
-const env = require('../../config/env');
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { query } from '../../config/database.js';
+import env from '../../config/env.js';
 
-const login = async (correo, password) => {
-  const sql = 'SELECT id, nombre, correo, password_hash, role FROM usuarios WHERE correo = $1';
-  const result = await query(sql, [correo]);
-  const usuario = result.rows[0];
+class AuthService {
+  /**
+   * Valida credenciales contra la tabla usuarios y devuelve un JWT.
+   * @returns {{ token: string, usuario: object } | null}
+   */
+  async login(correo, password) {
+    const result = await query(
+      `SELECT id, nombre, correo, password_hash, role, es_activo
+       FROM usuarios
+       WHERE correo = $1`,
+      [correo],
+    );
 
-  if (!usuario) return null;
+    const usuario = result.rows[0];
+    if (!usuario || !usuario.es_activo) return null;
 
-  const isValid = await bcrypt.compare(password, usuario.password_hash);
-  if (!isValid) return null;
+    const passwordValido = await bcrypt.compare(password, usuario.password_hash);
+    if (!passwordValido) return null;
 
-  const token = jwt.sign(
-    { id: usuario.id, correo: usuario.correo, role: usuario.role },
-    env.jwt.secret,
-    { expiresIn: env.jwt.expiresIn }
-  );
+    const token = jwt.sign(
+      { sub: usuario.id, correo: usuario.correo, role: usuario.role },
+      env.jwt.secret,
+      { expiresIn: env.jwt.expiresIn },
+    );
 
-  return {
-    token,
-    usuario: {
-      id: usuario.id,
-      nombre: usuario.nombre,
-      correo: usuario.correo,
-      role: usuario.role,
-    },
-  };
-};
+    return {
+      token,
+      usuario: {
+        id: usuario.id,
+        nombre: usuario.nombre,
+        correo: usuario.correo,
+        role: usuario.role,
+      },
+    };
+  }
 
-module.exports = { login };
+  /** Datos del usuario autenticado (a partir del payload del JWT) */
+  async perfil(usuarioId) {
+    const result = await query(
+      `SELECT id, nombre, correo, role
+       FROM usuarios
+       WHERE id = $1 AND es_activo = true`,
+      [usuarioId],
+    );
+    return result.rows[0] ?? null;
+  }
+}
+
+export default new AuthService();
