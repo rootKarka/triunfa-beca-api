@@ -15,6 +15,12 @@ import seccionesRoutes from './modules/admin/secciones/secciones.routes.js';
 import navegacionRoutes from './modules/admin/navegacion/navegacion.routes.js';
 import authRoutes from './modules/auth/auth.routes.js';
 
+//secciones publicas
+import seccionesPublicasRoutes from './modules/public/secciones/secciones.routes.js';
+
+//navegacion publica
+import navegacionPublicaRoutes from './modules/public/navegacion/navegacion.routes.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
@@ -36,9 +42,14 @@ app.use('/api/v1/admin/secciones', seccionesRoutes);
 app.use('/api/v1/admin/navegacion', navegacionRoutes);
 app.use('/api/v1/admin/auth', authRoutes);
 
+//Rutas de Secciones Publicas
+app.use('/api/v1/public/secciones', seccionesPublicasRoutes);
 
 // Archivos estáticos
 app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
+
+//Rutas de Navegacion Publica
+app.use('/api/v1/public/navegacion', navegacionPublicaRoutes);
 
 // 404
 app.use((req, res) => res.status(404).json({
