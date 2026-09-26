@@ -2,7 +2,7 @@ import { query } from '../../../config/database.js';
 
 export const getImagenes = async (seccion) => {
   let sql = `
-    SELECT id, url, texto_alt, seccion, orden, es_activa, fecha_creacion
+    SELECT id, url, texto_alt, seccion, grupo, orden, es_activa, fecha_creacion
     FROM imagenes
     WHERE es_activa = true
   `;
@@ -21,7 +21,7 @@ export const getImagenes = async (seccion) => {
 
 export const getImagenById = async (id) => {
   const sql = `
-    SELECT id, url, texto_alt, seccion, orden, es_activa, fecha_creacion
+    SELECT id, url, texto_alt, seccion, grupo, orden, es_activa, fecha_creacion
     FROM imagenes
     WHERE id = $1 AND es_activa = true
   `;

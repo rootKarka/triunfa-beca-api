@@ -13,6 +13,7 @@ import imagenesRoutes from './modules/admin/imagenes/imagenes.routes.js';
 import adminCatalogosRoutes from './modules/admin/catalogos/catalogos.routes.js';
 import seccionesRoutes from './modules/admin/secciones/secciones.routes.js';
 import navegacionRoutes from './modules/admin/navegacion/navegacion.routes.js';
+import auditoriaRoutes from './modules/admin/auditoria/auditoria.routes.js';
 import authRoutes from './modules/auth/auth.routes.js';
 
 //secciones publicas
@@ -40,6 +41,7 @@ app.use('/api/v1/admin/imagenes', imagenesRoutes);
 app.use('/api/v1/admin/catalogos', adminCatalogosRoutes);
 app.use('/api/v1/admin/secciones', seccionesRoutes);
 app.use('/api/v1/admin/navegacion', navegacionRoutes);
+app.use('/api/v1/admin/auditoria', auditoriaRoutes);
 app.use('/api/v1/admin/auth', authRoutes);
 
 //Rutas de Secciones Publicas

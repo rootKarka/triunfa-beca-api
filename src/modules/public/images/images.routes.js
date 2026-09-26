@@ -19,7 +19,7 @@ const validate = (req, res, next) => {
   next();
 };
 
-// GET /api/v1/public/imagenes?seccion=hero
+// GET /api/v1/public/imagenes?seccion=Portada
 router.get(
   '/',
   query('seccion').optional().isString().trim().withMessage('La sección debe ser un texto'),
