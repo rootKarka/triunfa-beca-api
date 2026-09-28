@@ -22,6 +22,8 @@ import seccionesPublicasRoutes from './modules/public/secciones/secciones.routes
 //navegacion publica
 import navegacionPublicaRoutes from './modules/public/navegacion/navegacion.routes.js';
 
+import eventsRoutes from './modules/public/events/events.routes.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
@@ -43,6 +45,9 @@ app.use('/api/v1/admin/secciones', seccionesRoutes);
 app.use('/api/v1/admin/navegacion', navegacionRoutes);
 app.use('/api/v1/admin/auditoria', auditoriaRoutes);
 app.use('/api/v1/admin/auth', authRoutes);
+
+
+app.use('/api/v1/public/events', eventsRoutes);
 
 //Rutas de Secciones Publicas
 app.use('/api/v1/public/secciones', seccionesPublicasRoutes);
