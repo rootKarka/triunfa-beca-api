@@ -8,8 +8,10 @@ import solicitudInfoRoutes from './modules/public/solicitudes-info/solicitudes-i
 import solicitudMatriculaRoutes from './modules/public/solicitudes-matricula/solicitudes-matricula.routes.js';
 import catalogosRoutes from './modules/public/catalogos/catalogos.routes.js';
 import imagenesPublicRoutes from './modules/public/images/images.routes.js';
+import ingresantesPublicRoutes from './modules/public/ingresantes/ingresantes.routes.js';
 
 import imagenesRoutes from './modules/admin/imagenes/imagenes.routes.js';
+import ingresantesRoutes from './modules/admin/ingresantes/ingresantes.routes.js';
 import adminCatalogosRoutes from './modules/admin/catalogos/catalogos.routes.js';
 import seccionesRoutes from './modules/admin/secciones/secciones.routes.js';
 import navegacionRoutes from './modules/admin/navegacion/navegacion.routes.js';
@@ -37,9 +39,11 @@ app.use('/api/v1/solicitudes', solicitudInfoRoutes);
 app.use('/api/v1/solicitudes', solicitudMatriculaRoutes);
 app.use('/api/v1/catalogos', catalogosRoutes);
 app.use('/api/v1/public/imagenes', imagenesPublicRoutes);
+app.use('/api/v1/public/ingresantes', ingresantesPublicRoutes);
 
 // Rutas administrativas
 app.use('/api/v1/admin/imagenes', imagenesRoutes);
+app.use('/api/v1/admin/ingresantes', ingresantesRoutes);
 app.use('/api/v1/admin/catalogos', adminCatalogosRoutes);
 app.use('/api/v1/admin/secciones', seccionesRoutes);
 app.use('/api/v1/admin/navegacion', navegacionRoutes);
