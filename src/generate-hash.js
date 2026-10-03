@@ -18,8 +18,8 @@ INSERT INTO usuarios (
 VALUES (
     'Administrador',
     'admin@triunfabeca.com',
-    'reemplazar por el hash generado',
-    'admin',
+    '$2a$10$q59yPN1AduHKtDdNFshoSezLRz3EuCryhRCetieakrtRuwa2UpkIG',
+    'ADMIN',
     true
 );
 
