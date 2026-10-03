@@ -1,8 +1,8 @@
-const { query } = require('../../../config/database');
+import { query } from '../../../config/database.js';
 
-const getImagenes = async (seccion) => {
+export const getImagenes = async (seccion) => {
   let sql = `
-    SELECT id, url, texto_alt, seccion, orden, es_activa, fecha_creacion
+    SELECT id, url, texto_alt, seccion, grupo, orden, es_activa, fecha_creacion
     FROM imagenes
     WHERE es_activa = true
   `;
@@ -10,7 +10,7 @@ const getImagenes = async (seccion) => {
 
   if (seccion) {
     params.push(seccion);
-    sql += ` AND seccion = $${params.length}`;
+    sql += ` AND LOWER(seccion) = LOWER($${params.length})`;
   }
 
   sql += ' ORDER BY orden ASC, fecha_creacion DESC';
@@ -19,14 +19,12 @@ const getImagenes = async (seccion) => {
   return result.rows;
 };
 
-const getImagenById = async (id) => {
+export const getImagenById = async (id) => {
   const sql = `
-    SELECT id, url, texto_alt, seccion, orden, es_activa, fecha_creacion
+    SELECT id, url, texto_alt, seccion, grupo, orden, es_activa, fecha_creacion
     FROM imagenes
     WHERE id = $1 AND es_activa = true
   `;
   const result = await query(sql, [id]);
   return result.rows[0] || null;
 };
-
-module.exports = { getImagenes, getImagenById };
