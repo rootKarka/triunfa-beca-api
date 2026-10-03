@@ -14,7 +14,9 @@ CREATE TABLE IF NOT EXISTS imagenes (
     seccion VARCHAR NOT NULL,
     orden INT DEFAULT 0,
     es_activa BOOLEAN DEFAULT true,
-    fecha_creacion TIMESTAMP DEFAULT now()
+    fecha_creacion TIMESTAMP DEFAULT now(),
+    nombre VARCHAR NOT NULL DEFAULT 'Sin nombre',
+    grupo VARCHAR
 );
 
 -- Tabla: solicitudes_informacion
