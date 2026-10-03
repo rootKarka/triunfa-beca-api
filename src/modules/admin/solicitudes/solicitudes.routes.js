@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import solicitudesController from './solicitudes.controller.js';
-import { authMiddleware } from '../../../shared/auth.middleware.js';
+import { authMiddleware } from '../../../shared/middelwares/auth.middelware.js';
 
 const router = Router();
 

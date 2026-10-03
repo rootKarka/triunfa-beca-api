@@ -5,7 +5,7 @@ import {
   postPlantilla,
   putPlantilla,
 } from './plantillas.controller.js';
-import { authMiddleware } from '../../../shared/auth.middleware.js';
+import { authMiddleware } from '../../../shared/middelwares/auth.middelware.js';
 
 const router = Router();
 

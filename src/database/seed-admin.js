@@ -12,8 +12,8 @@
 import bcrypt from 'bcryptjs';
 import { query } from '../config/database.js';
 
-const nombre = process.env.ADMIN_NOMBRE || 'Administrador';
-const correo = (process.env.ADMIN_CORREO || 'admin@triunfabeca.com').toLowerCase();
+const nombre = process.env.ADMIN_NOMBRE || 'Patrick';
+const correo = (process.env.ADMIN_CORREO || 'admin2@triunfabeca.com').toLowerCase();
 const password = process.env.ADMIN_PASSWORD || 'triunfa2026';
 
 async function seed() {
@@ -21,7 +21,7 @@ async function seed() {
 
   await query(
     `INSERT INTO usuarios (nombre, correo, password_hash, role, es_activo)
-     VALUES ($1, $2, $3, 'admin', true)
+     VALUES ($1, $2, $3, 'ADMIN', true)
      ON CONFLICT (correo)
      DO UPDATE SET password_hash = EXCLUDED.password_hash,
                    nombre = EXCLUDED.nombre,

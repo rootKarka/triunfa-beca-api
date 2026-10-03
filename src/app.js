@@ -8,8 +8,8 @@ import { fileURLToPath } from 'url';
 import env from './config/env.js';
 
 // Middlewares compartidos
-import { authMiddleware } from './shared/auth.middleware.js';
-import { notFoundHandler, errorHandler } from './shared/error-handler.js';
+import { authMiddleware } from './shared/middelwares/auth.middelware.js';
+import { notFoundHandler, errorHandler } from './shared/middelwares/error-handler.middelware.js';
 
 // Rutas públicas
 import solicitudInfoRoutes from './modules/public/solicitudes-info/solicitudes-info.routes.js';
@@ -38,7 +38,11 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 /* Seguridades, logs y middlewares base */
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+  })
+);
 app.use(cors({ origin: env.corsOrigins || '*' }));
 app.use(morgan(env.nodeEnv === 'development' ? 'dev' : 'combined'));
 
