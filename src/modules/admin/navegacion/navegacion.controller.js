@@ -5,6 +5,7 @@ import {
   updateNavegacion as updateNavegacionService,
   deleteNavegacion as deleteNavegacionService,
 } from './navegacion.service.js';
+import { broadcast } from '../../../shared/events/broadcaster.js';
 
 const usuarioId = (req) => req.user?.id ?? null;
 
@@ -34,6 +35,8 @@ export const createNavegacion = async (req,res,next) => {
       usuarioId:usuarioId(req),
     });
 
+    broadcast('navegacion', { accion: 'creada' });
+
     res.status(201).json({ success:true, message:'Elemento creado correctamente', data });
   } catch(err) { next(err); }
 };
@@ -55,6 +58,8 @@ export const updateNavegacion = async (req,res,next) => {
     const data = await updateNavegacionService(req.params.id,campos,usuarioId(req));
     if(!data) return res.status(404).json({ success:false, message:'Elemento no encontrado' });
 
+    broadcast('navegacion', { accion: 'actualizada' });
+
     res.status(200).json({ success:true, message:'Elemento actualizado correctamente', data });
   } catch(err) { next(err); }
 };
@@ -63,6 +68,8 @@ export const deleteNavegacion = async (req,res,next) => {
   try {
     const data = await deleteNavegacionService(req.params.id,usuarioId(req));
     if(!data) return res.status(404).json({ success:false, message:'Elemento no encontrado' });
+
+    broadcast('navegacion', { accion: 'eliminada' });
 
     res.status(200).json({ success:true, message:'Elemento eliminado correctamente' });
   } catch(err) { next(err); }

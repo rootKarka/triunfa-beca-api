@@ -5,6 +5,7 @@ import {
   updateSeccion as updateSeccionService,
   deleteSeccion as deleteSeccionService,
 } from './secciones.service.js';
+import { broadcast } from '../../../shared/events/broadcaster.js';
 
 const usuarioId = (req) => req.user?.id ?? null;
 
@@ -34,6 +35,8 @@ export const createSeccion = async (req,res,next) => {
       usuarioId:usuarioId(req),
     });
 
+    broadcast('secciones', { accion: 'creada' });
+
     res.status(201).json({ success:true, message:'Sección creada correctamente', data });
   } catch(err) { next(err); }
 };
@@ -56,6 +59,8 @@ export const updateSeccion = async (req,res,next) => {
     const data = await updateSeccionService(req.params.id,campos,usuarioId(req));
     if(!data) return res.status(404).json({ success:false, message:'Sección no encontrada' });
 
+    broadcast('secciones', { accion: 'actualizada' });
+
     res.status(200).json({ success:true, message:'Sección actualizada correctamente', data });
   } catch(err) { next(err); }
 };
@@ -64,6 +69,8 @@ export const deleteSeccion = async (req,res,next) => {
   try {
     const data = await deleteSeccionService(req.params.id,usuarioId(req));
     if(!data) return res.status(404).json({ success:false, message:'Sección no encontrada' });
+
+    broadcast('secciones', { accion: 'eliminada' });
 
     res.status(200).json({ success:true, message:'Sección eliminada correctamente' });
   } catch(err) { next(err); }

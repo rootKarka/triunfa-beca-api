@@ -1,4 +1,5 @@
 import * as service from './catalogos.service.js';
+import { broadcast } from '../../../shared/events/broadcaster.js';
 
 const getUsuarioId = (req) => req.user?.id ?? null;
 
@@ -16,6 +17,9 @@ export const agregarOpcion = async (req,res,next) => {
     );
 
     if(!data) return res.status(404).json({ success:false, message:'Catálogo no encontrado' });
+
+    broadcast('catalogos', { accion: 'creada', codigo: req.params.codigo });
+
     res.status(201).json({ success:true, message:'Opción agregada correctamente', data });
   } catch(error) {
     if(error.code === '23505') return res.status(409).json({ success:false, message:'La opción ya existe' });
@@ -30,6 +34,9 @@ export const editarOpcion = async (req,res,next) => {
     );
 
     if(!data) return res.status(404).json({ success:false, message:'Opción no encontrada' });
+
+    broadcast('catalogos', { accion: 'actualizada' });
+
     res.status(200).json({ success:true, message:'Opción actualizada correctamente', data });
   } catch(error) {
     if(error.code === '23505') return res.status(409).json({ success:false, message:'La opción ya existe' });
@@ -44,6 +51,9 @@ export const actualizarEstado = async (req,res,next) => {
     );
 
     if(!data) return res.status(404).json({ success:false, message:'Opción no encontrada' });
+
+    broadcast('catalogos', { accion: 'estado_actualizado' });
+
     res.status(200).json({ success:true, message:'Estado actualizado correctamente', data });
   } catch(error) { next(error); }
 };
@@ -53,6 +63,9 @@ export const eliminarOpcion = async (req,res,next) => {
     const data = await service.eliminarOpcion(req.params.id,getUsuarioId(req));
 
     if(!data) return res.status(404).json({ success:false, message:'Opción no encontrada' });
+
+    broadcast('catalogos', { accion: 'eliminada' });
+
     res.status(200).json({ success:true, message:'Opción eliminada correctamente' });
   } catch(error) { next(error); }
 };

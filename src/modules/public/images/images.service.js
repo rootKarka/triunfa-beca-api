@@ -10,7 +10,7 @@ export const getImagenes = async (seccion) => {
 
   if (seccion) {
     params.push(seccion);
-    sql += ` AND seccion = $${params.length}`;
+    sql += ` AND LOWER(seccion) = LOWER($${params.length})`;
   }
 
   sql += ' ORDER BY orden ASC, fecha_creacion DESC';
