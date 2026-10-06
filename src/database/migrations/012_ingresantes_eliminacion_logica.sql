@@ -1,5 +1,0 @@
-ALTER TABLE ingresantes
-ADD COLUMN IF NOT EXISTS es_eliminado BOOLEAN NOT NULL DEFAULT false;
-
-ALTER TABLE ingresantes
-ADD COLUMN IF NOT EXISTS fecha_eliminacion TIMESTAMPTZ;
