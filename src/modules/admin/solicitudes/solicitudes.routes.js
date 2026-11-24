@@ -13,5 +13,6 @@ router.get('/:id', solicitudesController.getById);
 router.put('/:id/estado', solicitudesController.updateEstado);
 router.put('/:id/notas', solicitudesController.updateNotas);
 router.post('/:id/mensajes', solicitudesController.registrarMensaje);
+router.post('/:id/sugerir-respuesta', solicitudesController.sugerirRespuesta);
 
 export default router;

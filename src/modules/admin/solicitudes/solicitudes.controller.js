@@ -1,5 +1,6 @@
 import solicitudesService from './solicitudes.service.js';
 import { AppError } from '../../../shared/app-error.js';
+import { sugerirRespuesta } from './ia.service.js';
 
 class SolicitudesController {
   /** GET /api/v1/admin/solicitudes */
@@ -96,6 +97,16 @@ class SolicitudesController {
         data: result,
         message: 'Mensaje registrado correctamente',
       });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  /** POST /api/v1/admin/solicitudes/:id/sugerir-respuesta */
+  async sugerirRespuesta(req, res, next) {
+    try {
+      const mensaje = await sugerirRespuesta(req.params.id);
+      res.json({ success: true, data: { mensaje } });
     } catch (error) {
       next(error);
     }
